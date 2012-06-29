@@ -1,5 +1,6 @@
 from PyQt4 import QtCore, QtGui, uic
 from lib.ui import UIMainWindow, UIWidget
+import sys
 
 from vagrant import Vagrant
 
@@ -16,7 +17,10 @@ class VagrantWidget(UIWidget):
         self.connect(self.get_ui().button_status, QtCore.SIGNAL("clicked()"), self.status)
         self.connect(self.get_ui().button_destroy, QtCore.SIGNAL("clicked()"), self.destroy)
 
-        self.get_ui().text_root.setText("/home/sherzberg/workspace/vagrant-testing")
+        if sys.platform == 'win32':
+            self.get_ui().text_root.setText("C:\\Users\\sherzberg\\workspace\\CQRS\\vagrant-services")
+        else:
+            self.get_ui().text_root.setText("/home/sherzberg/workspace/vagrant-testing")
 
     def up(self):
         print 'UP', self.get_root()
