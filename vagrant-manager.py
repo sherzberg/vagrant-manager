@@ -1,0 +1,19 @@
+#!/usr/bin/python
+
+import sys,time
+from PyQt4.QtGui import QApplication,QSplashScreen,QPixmap
+from PyQt4.QtCore import QString,Qt
+
+from gui import MainWindow
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+        
+    splash = QSplashScreen(QPixmap("./splash.png"),Qt.WindowStaysOnTopHint)
+    splash.show()
+
+    main_window = MainWindow()
+    main_window.show()
+
+    splash.finish(main_window)
+    app.exec_()
