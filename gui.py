@@ -17,11 +17,6 @@ class VagrantWidget(UIWidget):
         self.connect(self.get_ui().button_status, QtCore.SIGNAL("clicked()"), self.status)
         self.connect(self.get_ui().button_destroy, QtCore.SIGNAL("clicked()"), self.destroy)
 
-        if sys.platform == 'win32':
-            self.get_ui().text_root.setText("C:\\Users\\sherzberg\\workspace\\CQRS\\vagrant-services")
-        else:
-            self.get_ui().text_root.setText("/home/sherzberg/workspace/vagrant-testing")
-
         self.thread = VagrantThread()
         self.connect(self.thread, QtCore.SIGNAL("started()"), self.on_async_start)
         self.connect(self.thread, QtCore.SIGNAL("finished()"), self.on_async_stop)
@@ -46,6 +41,9 @@ class VagrantWidget(UIWidget):
     def get_root(self):
         root = str(self.get_ui().text_root.text())
         return root
+
+    def set_root(self, root):
+        self.get_ui().text_root.setText(root)
 
     def get_vagrant(self):
         return Vagrant(self.get_root())
@@ -77,21 +75,44 @@ class VagrantWidget(UIWidget):
         for button in [self.get_ui().button_up, self.get_ui().button_suspend, self.get_ui().button_resume, self.get_ui().button_destroy, self.get_ui().button_status]:
             button.setEnabled(enabled)
 
-
 class MainWindow(UIMainWindow):
+
     def __init__(self):
         UIMainWindow.__init__(self)
-
         self.setWindowTitle("Vagrant Manager")
+        self.connect(self.get_ui().action_quit, QtCore.SIGNAL("triggered()"), self.quit )
 
-        self.vagrant_widget = VagrantWidget(self)
-        self.get_ui().vagrant_widget_layout.addWidget(self.vagrant_widget)
-        self.vagrant_widget.show()
-
-        self.connect(self.vagrant_widget, QtCore.SIGNAL("vagrant_status(QString)"), self.on_vagrant_status)
+        self.load_ui()
 
     def on_vagrant_status(self, msg):
         self.set_status(msg)
 
+    def load_ui(self):
+        self.vagrant_widget = VagrantWidget(self)
+        self.get_ui().vagrant_widget_layout.addWidget(self.vagrant_widget)
+        self.vagrant_widget.show()
+        self.connect(self.vagrant_widget, QtCore.SIGNAL("vagrant_status(QString)"), self.on_vagrant_status)
+        self.vagrant_widget.set_root(self.read_settings()['vagrant_root'])
+
     def set_status(self, msg, length=5000):
         self.get_ui().statusbar.showMessage(msg, length)
+
+    def _get_settings(self):
+        return QtCore.QSettings('vagrant-manager')
+
+    def write_settings(self):
+        print 'Write settings'
+        settings = self._get_settings()
+        settings.setValue("vagrant_root", self.vagrant_widget.get_root());
+
+    def read_settings(self):
+        print 'Read settings'
+        conf = {}
+        settings = self._get_settings()
+        conf['vagrant_root'] = settings.value('vagrant_root').toString()
+        return conf
+
+    def quit(self):
+        print 'QUIT'
+        self.write_settings()
+        self.close()
