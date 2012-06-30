@@ -52,6 +52,7 @@ class Vagrant(object):
     RUNNING = 'running' # vagrant up
     NOT_CREATED = 'not created' # vagrant destroy
     POWEROFF = 'poweroff' # vagrant halt
+    SUSPENDED = 'suspended'
 
     def __init__(self, root=None):
         '''
