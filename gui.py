@@ -1,7 +1,8 @@
 from PyQt4 import QtCore, QtGui, uic
 from lib.ui import UIMainWindow, UIWidget
 from util import VagrantThread
-import sys
+import sys, os
+from datetime import datetime
 
 from vagrant import Vagrant
 
@@ -9,7 +10,8 @@ class VagrantWidget(UIWidget):
     def __init__(self, parent=None):
         super(VagrantWidget, self).__init__(parent)
 
-        self.get_ui().progress_bar.hide()
+        self.get_ui().progress_bar.setValue(0)
+        self.get_ui().progress_bar.setMaximum(100)
 
         self.connect(self.get_ui().button_up, QtCore.SIGNAL("clicked()"), self.up)
         self.connect(self.get_ui().button_suspend, QtCore.SIGNAL("clicked()"), self.suspend)
@@ -51,16 +53,26 @@ class VagrantWidget(UIWidget):
     def set_status(self, msg, length=5000):
         self.emit(QtCore.SIGNAL("vagrant_status(QString)"), msg)
         print msg
+        self.get_ui().label_status.setText(msg)
+        self.log(msg)
+
+    def log(self, msg):
+        self.emit(QtCore.SIGNAL("log(QString)"), msg)
+        datetime_format = str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        self.get_ui().detail_log.insertPlainText(datetime_format +": "+msg)
+        self.get_ui().detail_log.insertPlainText(os.linesep)
 
     def on_async_start(self):
         print 'ASYNC: start'
         self._enable_buttons(False)
-        self.get_ui().progress_bar.show()
+        self.get_ui().progress_bar.setValue(-1)
+        self.get_ui().progress_bar.setMaximum(0)
 
     def on_async_stop(self):
         print 'ASYNC: stop'
         self._enable_buttons(True)
-        self.get_ui().progress_bar.hide()
+        self.get_ui().progress_bar.setValue(0)
+        self.get_ui().progress_bar.setMaximum(100)
 
     def on_async_complete(self, msg):
         if Vagrant.RUNNING == msg:
@@ -69,7 +81,6 @@ class VagrantWidget(UIWidget):
             self.set_status("Vagrant root %s is Not Created" % self.get_root())
         elif Vagrant.POWEROFF:
             self.set_status("Vagrant root %s is Powered Off" % self.get_root())
-
 
     def _enable_buttons(self, enabled=True):
         for button in [self.get_ui().button_up, self.get_ui().button_suspend, self.get_ui().button_resume, self.get_ui().button_destroy, self.get_ui().button_status]:
