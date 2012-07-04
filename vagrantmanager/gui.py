@@ -1,6 +1,6 @@
 from PyQt4 import QtCore, QtGui, uic
 from lib.ui import UIMainWindow, UIWidget
-from util import VagrantThread
+from vagrantmanager.util import VagrantThread
 import sys, os
 from datetime import datetime
 

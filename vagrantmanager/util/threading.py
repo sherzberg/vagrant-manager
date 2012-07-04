@@ -1,6 +1,6 @@
 from PyQt4 import QtCore
 
-from vagrant import Vagrant
+from vagrantmanager.util.vagrant import Vagrant
 
 class VagrantThread(QtCore.QThread):
     def __init__(self, parent=None):

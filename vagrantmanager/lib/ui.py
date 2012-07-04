@@ -8,7 +8,7 @@ class UIMainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self, parent)
 
         ui_name = self.__ui_name__ if self.__ui_name__ else self.__class__.__name__
-        self._ui = uic.loadUi("ui/%s.ui" %ui_name, parent)
+        self._ui = uic.loadUi("vagrantmanager/ui/%s.ui" %ui_name, parent)
 
     def show(self):
         self._ui.show()
@@ -24,7 +24,7 @@ class UIWidget(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
 
         ui_name = self.__ui_name__ if self.__ui_name__ else self.__class__.__name__
-        self._ui = uic.loadUi("ui/%s.ui" %ui_name, self)
+        self._ui = uic.loadUi("vagrantmanager/ui/%s.ui" %ui_name, self)
 
     def get_ui(self):
         return self._ui
