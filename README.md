@@ -28,5 +28,4 @@ Usage
 
 Execute this in a shell or double click this file in your file browser:
 
-::
-    $ vagrantmanager/vagrantmanager
+$ vagrantmanager/vagrantmanager
