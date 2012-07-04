@@ -4,8 +4,6 @@ vagrant-manager
 
 Simple GUI application that manages multiple vagrant instances.
 
-Can be setup to run with cron.
-
 Requirements
 ============
 
