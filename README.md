@@ -22,3 +22,11 @@ Features (that currently work):
 ===============================
 
 * Register a single vagrant root (the folder with a Vagrantfile) and suspend, resume, destroy, get the status, and provision a machine.
+
+Usage
+============
+
+Execute this in a shell or double click this file in your file browser:
+
+::
+    $ vagrantmanager/vagrantmanager
